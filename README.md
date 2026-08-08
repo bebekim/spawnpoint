@@ -21,8 +21,10 @@ git --version
 If both commands print a version number, you are ready to go. If one of them says "command not
 found", install the missing piece first.
 
-- **Ruby** — from `https://www.ruby-lang.org/` or, on Windows, from
-  `https://github.com/oneclick/rubyinstaller2`.
+- **Ruby** — from `https://www.ruby-lang.org/`. On Windows, the RubyInstaller2 downloads are at
+  `https://github.com/oneclick/rubyinstaller2/releases`; pick the latest release and use the
+  installer that matches your machine (the plain installer is enough if you do not need to compile
+  C extensions).
 - **Git** — from `https://git-scm.com/`. On macOS, Git may already be available; if not,
   `xcode-select --install` is one common way to get it. On Windows, the Git installer from
   `git-scm.com` puts Git on your PATH.
@@ -84,7 +86,8 @@ On Windows, a natural options are:
 - **WinGet** — the native Windows package manager.
 
 For now, the recommended path is to clone the repository and run `ruby bin/spwn`. Ruby can be
-installed from `https://www.ruby-lang.org/` or via `https://github.com/oneclick/rubyinstaller2`.
+installed from `https://www.ruby-lang.org/`; on Windows, the RubyInstaller2 downloads are at
+`https://github.com/oneclick/rubyinstaller2/releases`.
 If you later want a Scoop manifest or WinGet package, the manifest would install the script and
 its dependencies.
 
