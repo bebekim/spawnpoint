@@ -37,8 +37,18 @@ The goal is "easy to install and easy to update", not a polished distribution pi
 ### macOS
 
 The simplest route for a Mac is to clone this repo and point students at the `bin/spwn` script.
-If you want something closer to a real install, you can wrap it in a small shell script or alias
-that runs `ruby /path/to/spawnpoint/bin/spwn`.
+If you want something closer to a real install, put a small shim on the PATH that runs the script
+from this repo. For example, a file at `~/.local/bin/spwn` with this content makes `spwn` available
+everywhere:
+
+```sh
+#!/bin/sh
+exec ruby /path/to/spawnpoint/bin/spwn "$@"
+```
+
+Make the shim executable with `chmod +x ~/.local/bin/spwn`, and make sure
+`/path/to/spawnpoint/bin/spwn` is executable too. After that, `spwn --help` works from any
+directory. The repo is still the single source of truth; the shim just delegates to it.
 
 Homebrew is available on macOS, but this project does not currently provide a formula. If you want
 one later, the formula would essentially just install the `bin/spwn` script and its README.
