@@ -97,11 +97,42 @@ If you want to hand students a single zip file, create a build archive that cont
 
 Then students can unzip it and run `ruby bin/spwn` from the extracted folder.
 
+## Command mapping
+
+`spwn` is a thin rename layer over Git. The table below shows the main mappings. When a student
+is ready, they can use the Git command directly instead.
+
+| `spwn` command | Git command(s) | What it does |
+| --- | --- | --- |
+| `spwn init` | `git init` | Start a new project folder that Git can track. |
+| `spwn add <file>` | `git add <file>` | Tell Git which files to include in the next snapshot. |
+| `spwn add .` | `git add .` | Stage all changed files in the current folder. |
+| `spwn add -A` | `git add -A` | Stage all changed files, including deletions. |
+| `spwn commit -m 'note'` | `git commit -m 'note'` | Save the files you have already picked. |
+| `spwn save -m 'note'` | `git add .` then `git commit -m 'note'` | Stage changed files and commit them together. |
+| `spwn look` | `git status` | See what is going on in your project right now. |
+| `spwn compare` | `git diff` | See what changed since the last snapshot. |
+| `spwn history` | `git log` | Replay the story of your project, one snapshot at a time. |
+| `spwn hop <branch>` | `git switch <branch>` | Jump to another universe (branch). |
+| `spwn hop -- <branch> <file>` | `git restore --source <branch> -- <file>` | Bring a file back from another snapshot. |
+| `spwn upload` | `git push` | Send your snapshots to the shared project space. |
+| `spwn download` | `git pull` | Fetch new snapshots from the shared project space and combine them with yours. |
+
+A few notes about the mapping:
+
+- `spwn save` is the only command that runs more than one Git command. It stages the current
+  folder and then commits, so students can think of it as "save everything with a note".
+- `spwn hop --` is the file-restore form. The branch must be named explicitly, for example
+  `spwn hop -- feature my_level.rb`. If you give only a file name and that file already exists on
+  the current branch, `spwn` restores it from there; otherwise it asks you to name the source
+  branch.
+- `spwn` does not hide Git's errors on purpose. If something goes wrong, the error still comes
+  from Git, so students eventually see the real message behind the friendly name.
+
 ## Commands
 
-Run `ruby bin/spwn --help` for the current list. The important idea is that each `spwn` command
-maps to one or more Git commands. The first version focuses on the commands students need while
-following a single-player course:
+Run `ruby bin/spwn --help` for the current list. The first version focuses on the commands
+students need while following a single-player course:
 
 - `spwn save` — stage changed files and commit them together.
 - `spwn add` — stage files. Supports individual paths, `.`, and `-A`.
