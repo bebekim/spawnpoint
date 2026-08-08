@@ -6,6 +6,29 @@ A child-friendly text interface for Git, aimed at 12-year-olds learning to progr
 presents them through a simple command-line interface. It is not a replacement for Git; it is
 a mask that makes the vocabulary friendlier while still calling Git under the hood.
 
+## Before you start
+
+`spwn` needs two things already installed: **Ruby** and **Git**. It does not install either of
+them for you.
+
+Check whether you have them by running:
+
+```bash
+ruby --version
+git --version
+```
+
+If both commands print a version number, you are ready to go. If one of them says "command not
+found", install the missing piece first.
+
+- **Ruby** — from `https://www.ruby-lang.org/` or, on Windows, from
+  `https://github.com/oneclick/rubyinstaller2`.
+- **Git** — from `https://git-scm.com/`. On macOS, Git may already be available; if not,
+  `xcode-select --install` is one common way to get it. On Windows, the Git installer from
+  `git-scm.com` puts Git on your PATH.
+
+Once Ruby and Git are installed, `spwn` itself is just one script.
+
 ## Philosophy
 
 - Friendlier words, not a new VCS. Git still does the real work.
