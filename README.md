@@ -29,7 +29,7 @@ found", install the missing piece first.
   `xcode-select --install` is one common way to get it. On Windows, the Git installer from
   `git-scm.com` puts Git on your PATH.
 
-Once Ruby and Git are installed, `spwn` itself is just one script.
+Once Ruby and Git are installed, `spwn` itself is one `gem install` away.
 
 ## Philosophy
 
@@ -37,68 +37,42 @@ Once Ruby and Git are installed, `spwn` itself is just one script.
 - Thin confirmations. Dangerous operations still go through Git's normal behavior; we do not
   add extra popups unless a command genuinely needs a "are you sure?" step.
 - Easy to extend. The mapping between `spwn` commands and Git invocations lives inside
-  `bin/spwn` so students and instructors can add or change commands without juggling extra files.
+  `lib/spawnpoint/cli.rb` so students and instructors can add or change commands in one place.
 - Standard Git still works. Students can always fall back to `git` directly when they are ready.
 
 ## Quick start
 
-Run the script directly from this repository:
+Install the gem and run `spwn`:
 
 ```bash
-ruby bin/spwn --help
+gem install spawnpoint
+spwn --help
 ```
 
-If you have given `bin/spwn` execute permission, you can also run:
+To run the latest code from this repository instead:
 
 ```bash
-chmod +x bin/spwn
-./bin/spwn --help
+ruby -Ilib exe/spwn --help
 ```
 
 ## Installing for a student
 
-The goal is "easy to install and easy to update", not a polished distribution pipeline.
+`spwn` is published as the `spawnpoint` gem, so installation is the same on macOS
+and Windows once Ruby is installed:
 
-### macOS
-
-The simplest route for a Mac is to clone this repo and point students at the `bin/spwn` script.
-If you want something closer to a real install, put a small shim on the PATH that runs the script
-from this repo. For example, a file at `~/.local/bin/spwn` with this content makes `spwn` available
-everywhere:
-
-```sh
-#!/bin/sh
-exec ruby /path/to/spawnpoint/bin/spwn "$@"
+```bash
+gem install spawnpoint
 ```
 
-Make the shim executable with `chmod +x ~/.local/bin/spwn`, and make sure
-`/path/to/spawnpoint/bin/spwn` is executable too. After that, `spwn --help` works from any
-directory. The repo is still the single source of truth; the shim just delegates to it.
+This puts the `spwn` command on the PATH. Updating later is `gem update spawnpoint`.
 
-Homebrew is available on macOS, but this project does not currently provide a formula. If you want
-one later, the formula would essentially just install the `bin/spwn` script and its README.
+If a machine cannot reach rubygems.org, build the gem from this repository and
+install the file directly:
 
-### Windows
-
-On Windows, a natural options are:
-
-- **Scoop** (`https://scoop.sh/`) — good for CLI tools and easy updates.
-- **WinGet** — the native Windows package manager.
-
-For now, the recommended path is to clone the repository and run `ruby bin/spwn`. Ruby can be
-installed from `https://www.ruby-lang.org/`; on Windows, the RubyInstaller2 downloads are at
-`https://github.com/oneclick/rubyinstaller2/releases`.
-If you later want a Scoop manifest or WinGet package, the manifest would install the script and
-its dependencies.
-
-### Compressed archive
-
-If you want to hand students a single zip file, create a build archive that contains at least:
-
-- `bin/spwn`
-- `README.md`
-
-Then students can unzip it and run `ruby bin/spwn` from the extracted folder.
+```bash
+gem build spawnpoint.gemspec
+gem install --local ./spawnpoint-0.2.0.gem
+```
 
 ## Command mapping
 
@@ -120,6 +94,8 @@ is ready, they can use the Git command directly instead.
 | `spwn hop -- <branch> <file>` | `git restore --source <branch> -- <file>` | Bring a file back from another snapshot. |
 | `spwn upload` | `git push` | Send your snapshots to the shared project space. |
 | `spwn download` | `git pull` | Fetch new snapshots from the shared project space and combine them with yours. |
+| `spwn sync <lesson> --into <game>` | — | Copy lesson files into a game folder, replacing matching files when confirmed. |
+| `spwn rollback --into <game>` | — | Undo the most recent lesson sync: restore replaced files and remove newly copied files. |
 
 A few notes about the mapping:
 
@@ -134,7 +110,7 @@ A few notes about the mapping:
 
 ## Commands
 
-Run `ruby bin/spwn --help` for the current list. The first version focuses on the commands
+Run `spwn --help` for the current list. The first version focuses on the commands
 students need while following a single-player course:
 
 - `spwn save` — stage changed files and commit them together.
@@ -147,6 +123,10 @@ students need while following a single-player course:
 - `spwn upload` — push to a remote.
 - `spwn download` — fetch and integrate from a remote.
 - `spwn init` — start a new project.
+- `spwn sync <lesson> --into <game>` — copy lesson files into a game folder. Use `--force` to
+  replace matching files without asking.
+- `spwn rollback --into <game>` — undo the most recent sync. Files that existed before the sync
+  are restored, files created by the sync are removed, and unrelated game files are left alone.
 
 Branch-related commands are framed as "multiverse" because branches feel like parallel universes
 to a 12-year-old. `spwn hop` is the entry point for both switching branches and restoring files;
@@ -154,7 +134,7 @@ the script explains the difference in its help text.
 
 ## Extending the mapping
 
-Open `bin/spwn` and look for the command mapping table near the top of the script. Each entry
+Open `lib/spawnpoint/cli.rb` and look for the command mapping table near the top of the file. Each entry
 describes:
 
 - the `spwn` subcommand name,
