@@ -75,14 +75,14 @@ module Spawnpoint
 
     def git_command_exists?(name)
       # A quick probe using git's own error reporting.
-      system("git", name, "--help", out: "/dev/null", err: "/dev/null")
+      system("git", name, "--help", out: File::NULL, err: File::NULL)
     end
 
     def file_on_head?(path)
       # Returns true when the given path is tracked and present on the current HEAD.
       # We use git ls-files so the check respects the index/HEAD rather than the
       # working tree alone.
-      system("git", "ls-files", "--error-unmatch", path, out: "/dev/null", err: "/dev/null")
+      system("git", "ls-files", "--error-unmatch", path, out: File::NULL, err: File::NULL)
     end
 
     # ---------------------------------------------------------------------
@@ -291,8 +291,8 @@ module Spawnpoint
     # Runs the CLI and returns an Integer exit code.
     #
     # Handlers return an Integer exit code, or true/false from `system`.
-    # Anything truthy-but-not-an-Integer and `true` map to 0; false and nil
-    # map to 1, so misuse and Git failures exit non-zero.
+    # Integers pass through, `true` maps to 0, and everything else (false, nil)
+    # maps to 1, so misuse and Git failures exit non-zero.
     def run(argv)
       command_name = argv[0]
 

@@ -65,7 +65,7 @@ module Spawnpoint
 
       if has_assets
         puts "This lesson includes an assets/ folder."
-        puts "Assets may look different from the previous lesson. "
+        puts "Assets may look different from the previous lesson."
         puts "If you already have sprites from an older lesson, you will be asked before each one is replaced."
         puts ""
       end
